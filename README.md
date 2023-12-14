@@ -123,3 +123,19 @@ const unsubscribe = store.subscribe(() => {
 // unregister listenter
 unsubscribe();
 ```
+
+Multiple Reducer: function createStore chỉ nhận vào 1 tham số là 1 reducer. Để có thể kết hợp nhiều reducer khác nhau sử dụng function combineReducers.
+
+- Tham số là một object với mỗi cặp key là name của reducer và value là reducer tương ứng
+- Giá trị trả về là root reducer, sử dụng để truyền vào làm đối số cho function createStore.
+- Ví dụ:
+
+```
+const { combineReducers } = require('redux');
+...
+const rootReducer = combineReducers({
+  cake: cakeReducer,
+  iceCream: iceCreamReducer,
+});
+const store = createStore(rootReducer);
+```
