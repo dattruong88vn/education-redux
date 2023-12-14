@@ -152,12 +152,40 @@ Redux có thể kết hợp một hoặc nhiều middleware cùng lúc, tuỳ v�
 Để kết hợp các middleware cùng với redux, thực hiện như sau:
 
 > Khai báo các middleware theo hướng dẫn của mỗi thư viện.
+>
 > Pass các middleware cần dùng như là tham số vào function applyMiddleware (export từ redux): applyMiddleware(middleware1, middleware2).
-> Truyền giá trị trả về của function applyMiddleware làm tham số thứ 2 của function createStore: createStore(reducer, applyMiddleware(middleware1, middleware2))
+>
+> Truyền giá trị trả về của function applyMiddleware làm tham số thứ 2 của function createStore: createStore(reducer, applyMiddleware(middleware1, middleware2));
 
 ```
 const reduxLogger = require("redux-logger");
 const logger = reduxLogger.createLogger();
 ...
 const store = createStore(rootReducer, applyMiddleware(logger));
+```
+
+## 5. Async Action
+
+Action đồng bộ: BUY_CAKE và BUY_ICE_CREAM là 2 action đồng bộ, được thực hiện và hoàn thành ngay lập tức.
+Action bất đồng bộ: call API để fetch data từ server và sử dụng data đó trong application.
+
+Redux-thunk: middleware tạo ra async action creator, action creator thay vì trả về một object action thì sẽ trả về một function. Function này nhận vào 1 tham số là function dispatch và có thể thực hiện các side effect task như call api.
+
+```
+// async action creator
+
+const fetchUsers = () => {
+  return (dispatch) => {
+    dispatch(fetchUserRequest());
+    axios
+      .get("https://jsonplaceholder.typicode.com/users12")
+      .then((response) => {
+        const users = response.data.map((user) => user.id);
+        dispatch(fetchUserSuccess(users));
+      })
+      .catch((err) => {
+        dispatch(fetchUserFailure(err));
+      });
+  };
+};
 ```
