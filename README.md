@@ -139,3 +139,25 @@ const rootReducer = combineReducers({
 });
 const store = createStore(rootReducer);
 ```
+
+## 4. Middleware
+
+Là một cách được đề xuất nhằm mở rộng các chức năng của Redux.
+Nó cung cấp phần mở rộng của bên thứ ba nhằm can thiệp vào giữa 2 thời điểm dispatch action và nó thực thi code trong reducer.
+Sử dụng middleware để logging, reporting hay thực hiện asynchronous task (fetch api)...
+
+Redux-logger là một middleware giúp log ra toàn bộ các thông tin liên quan đến redux.
+
+Redux có thể kết hợp một hoặc nhiều middleware cùng lúc, tuỳ vào yêu cầu.
+Để kết hợp các middleware cùng với redux, thực hiện như sau:
+
+> Khai báo các middleware theo hướng dẫn của mỗi thư viện.
+> Pass các middleware cần dùng như là tham số vào function applyMiddleware (export từ redux): applyMiddleware(middleware1, middleware2).
+> Truyền giá trị trả về của function applyMiddleware làm tham số thứ 2 của function createStore: createStore(reducer, applyMiddleware(middleware1, middleware2))
+
+```
+const reduxLogger = require("redux-logger");
+const logger = reduxLogger.createLogger();
+...
+const store = createStore(rootReducer, applyMiddleware(logger));
+```
