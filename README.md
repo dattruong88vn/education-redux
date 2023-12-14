@@ -44,13 +44,82 @@ React-Redux cung cấp một số tính năng và methods để có thể connec
 
 - Là cách duy nhất để app có thể tương tác với store.
 - Mang một số thông tin từ App và truyền vào Redux store.
+- Action cho biết điều gì sẽ xảy ra trong store.
 - Là một Javascript Object, có chứa thuộc tính type: thể hiện loại action
-  `const actionBuyCake = {
-      type: "BUY_CAKE"
-  }`
 - Action Creator là một function return về một action.
-  `const actionCreatorByCake = function() {
+- Hoàn toàn có thể pass 1 action vào function dispatch, tuy nhiên khuyến khích sử dụng action creator để tránh viết code lặp đi lặp lại, khi maintain hoặc mở rộng chỉ cần sửa 1 chỗ.
+
+```
+const BUY_CAKE = "BUY_CAKE";
+
+const buyCake = function() {
+    return {
+        type: BUY_CAKE
+    }
+}
+```
+
+### 3.2. Reducer
+
+- Xác định app state sẽ thay đổi như thế nào khi có action gửi lên store.
+- Action chỉ xác định điều gì sẽ xảy ra chứ không thể hiện state sẽ thay đổi như thế nào. Reducer đảm nhiệm vai trò này.
+- Reducer là một function nhận vào 2 đối số là state trước đó và action, đồng thời return về state mới của app.
+
+```
+// initial state
+const initialState = {
+  numberOfCakes: 10,
+};
+
+// reducer
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case BUY_CAKE: {
       return {
-          type: "BUY_CAKE"
-      }
-  }`
+        ...state,
+        numberOfCakes: state.numberOfCakes - 1,
+      };
+    }
+
+    default: {
+      return state;
+    }
+  }
+};
+```
+
+### 3.3. Redux Store
+
+Là nơi quản lý store cho toàn bộ app.
+
+Có các chức năng:
+
+- Lưu trữ state cho app.
+- Cho phép truy cập state thông qua hàm getState().
+- Cho phép update state thông qua hàm dispatch(action)
+- Cho phép register các listener thông qua hàm subscribe(listener): hàm subscribe nhận vào 1 tham số là function listener, và nó sẽ được thực thi mỗi khi state được update.
+- Cho phép unregister các listener thông qua function được return về từ function subscribe
+- Để tạo store, sử dụng function createStore từ thư viện redux
+
+Ví dụ:
+
+```
+const redux = require('redux');
+
+const { createStore } = redux;
+const store = createStore(reducer);
+
+// get state of store
+console.log("state", store.getState());
+
+// dispatch action
+store.dispatch(buyCake());
+
+// register listener
+const unsubscribe = store.subscribe(() => {
+  console.log("update state", store.getState());
+});
+
+// unregister listenter
+unsubscribe();
+```

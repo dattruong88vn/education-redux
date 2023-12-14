@@ -45,6 +45,7 @@ console.log("state", store.getState());
 store.dispatch(buyCake());
 console.log("state", store.getState());
 
+// register listener
 const unsubscribe = store.subscribe(() => {
   console.log("update state", store.getState());
 });
@@ -52,4 +53,6 @@ const unsubscribe = store.subscribe(() => {
 store.dispatch(buyCake());
 store.dispatch(buyCake());
 console.log("state", store.getState());
+
+// unregister
 unsubscribe();
